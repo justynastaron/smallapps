@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_sort" android:title="@string/main_sort"
+        android:orderInCategory="100" app:showAsAction="never" >
+        <menu>
+            <item
+                android:id="@+id/menuSortNewest"
+                android:title="@string/sort_newest" />
+            <item
+                android:id="@+id/menuSortRating"
+                android:title="@string/sort_rating" />
+        </menu>
+    </item>
+</menu>
