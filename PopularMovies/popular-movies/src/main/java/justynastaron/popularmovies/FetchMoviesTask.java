@@ -3,7 +3,6 @@ package justynastaron.popularmovies;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,19 +15,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     private MainActivity activity;
-    private ArrayAdapter<String> mPostersAdapter;
+    private MovieAdapter mPostersAdapter;
 
-    public FetchMoviesTask(MainActivity activity, ArrayAdapter<String> postersAdapter){
+    public FetchMoviesTask(MainActivity activity, MovieAdapter postersAdapter){
         this.activity = activity;
         mPostersAdapter = postersAdapter;
     }
 
-    private String[] getPosterDataFromJson(String movieJsonStr)
+    private Movie[] getPosterDataFromJson(String movieJsonStr)
             throws JSONException {
 
         final String DB_RESULTS = "results";
@@ -41,7 +40,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
         JSONObject moviesJson = new JSONObject(movieJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(DB_RESULTS);
 
-        String[] resultStrs = new String[moviesArray.length()];
+        Movie[] moviesResults = new Movie[moviesArray.length()];
 
         String title;
         String overview;
@@ -58,13 +57,14 @@ public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
             averageVote = singleMovie.getDouble(DB_VOTE_AVERAGE);
             releaseDate = singleMovie.getString(DB_RELEASE_DATE);
             thumbnailPath = singleMovie.getString(DB_THUMBNAIL);
-            resultStrs[i] = title + " " + releaseDate;
+
+            moviesResults[i] = new Movie(title, overview, averageVote, releaseDate, thumbnailPath);
         }
-        return resultStrs;
+        return moviesResults;
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected Movie[] doInBackground(String... params) {
 
         if (params == null || params.length <= 0) {
             return null;
@@ -133,12 +133,12 @@ public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected void onPostExecute(String[] result) {
+    protected void onPostExecute(Movie[] result) {
         try {
             if (result != null) {
                 mPostersAdapter.clear();
-                for (String movieStr : result) {
-                    mPostersAdapter.add(movieStr);
+                for (Movie movie : result) {
+                    mPostersAdapter.add(movie);
                 }
             } else {
                 activity.pickFragmentToLoad(false);

@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class MoviesGridFragment extends Fragment {
     private final String LOG_TAG = MoviesGridFragment.class.getSimpleName();
 
     private SharedPreferences preferences;
-    private ArrayAdapter<String> mPostersAdapter;
+    private MovieAdapter mPostersAdapter;
 
     public MoviesGridFragment() {
 
@@ -71,11 +70,7 @@ public class MoviesGridFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         mPostersAdapter =
-                new ArrayAdapter<>(
-                        getActivity(),
-                        R.layout.grid_item_poster,
-                        R.id.grid_item_poster_textview,
-                        new ArrayList<String>());
+                new MovieAdapter(getActivity(), new ArrayList<Movie>());
 
         View rootView = inflater.inflate(R.layout.posters_main, container, false);
 
@@ -85,8 +80,8 @@ public class MoviesGridFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String poster = mPostersAdapter.getItem(position);
-                Intent detailActivityStart = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, poster);
+                Movie poster = mPostersAdapter.getItem(position);
+                Intent detailActivityStart = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, poster.toString());
                 startActivity(detailActivityStart);
             }
         });
