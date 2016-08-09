@@ -2,59 +2,80 @@ package justynastaron.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class PostersFragment extends Fragment {
 
+    private final String LOG_TAG = PostersFragment.class.getSimpleName();
+
+    private SharedPreferences preferences;
     private ArrayAdapter<String> mPostersAdapter;
 
     public PostersFragment() {
+
     }
 
-    private void updatePosters() {
-        FetchPostersTask postersTask = new FetchPostersTask();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //TODO add preferences to request and executing task
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menuSortNewest) {
+            saveSortingAndUpdate(SortingOrder.POPULAR.getName());
+        } else if (id == R.id.menuSortRating) {
+            saveSortingAndUpdate(SortingOrder.RATING.getName());
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveSortingAndUpdate(String sortingOrder) {
+        preferences.edit().putString(getString(R.string.pref_sorting_key), sortingOrder).commit();
+        updatePosters(sortingOrder);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updatePosters();
+        String savedSortingOrder = preferences.getString(getString(R.string.pref_sorting_key), SortingOrder.POPULAR.getName());
+        updatePosters(savedSortingOrder);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ArrayList<String> tempList = new ArrayList<>();
-        tempList.add("Movie 1");
-        tempList.add("Movie 2");
-        tempList.add("Movie 3");
-
         mPostersAdapter =
                 new ArrayAdapter<>(
                         getActivity(),
                         R.layout.grid_item_poster,
                         R.id.grid_item_poster_textview,
-                        tempList);
+                        new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.posters_main, container, false);
 
@@ -73,53 +94,30 @@ public class PostersFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchPostersTask extends AsyncTask<String, Void, String[]> {
+    private void updatePosters(String sortingOrder) {
+        try{
+            FetchPostersTask postersTask = new FetchPostersTask((MainActivity) getActivity(), mPostersAdapter);
+            postersTask.execute(sortingOrder);
+        }
+        catch (ClassCastException e){
+            Log.e(LOG_TAG, "Attempt of using not MainActivity.", e);
+        }
+        catch (NullPointerException e){
+            Log.e(LOG_TAG, "Are you associating fragment with context, not activity?", e);
+        }
+    }
 
-        private final String LOG_TAG = FetchPostersTask.class.getSimpleName();
+    private enum SortingOrder {
+        POPULAR("popular"), RATING("top_rated");
 
-        private String[] getPosterDataFromJson(String movieJsonStr, int numDays)
-                throws JSONException {
-            //TODO get movie data from JSON
-            return null;
+        private String name;
+
+        SortingOrder(String name) {
+            this.name = name;
         }
 
-        @Override
-        protected String[] doInBackground(String... params) {
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            String movieJsonStr = null;
-
-            String format = "json";
-
-            try {
-                //TODO download data
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            //TODO return data from JSON
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String[] result) {
-            if (result != null) {
-                mPostersAdapter.clear();
-                for (String movieStr : result) {
-                    mPostersAdapter.add(movieStr);
-                }
-            }
+        private String getName() {
+            return name;
         }
     }
 }

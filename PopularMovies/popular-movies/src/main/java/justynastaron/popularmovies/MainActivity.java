@@ -1,9 +1,12 @@
 package justynastaron.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,28 +17,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                   .add(R.id.container, new PostersFragment())
-                   .commit();
+            pickFragmentToLoad();
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public void pickFragmentToLoad() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(isOnline()) {
+            transaction.replace(R.id.container, new PostersFragment());
+        } else {
+            transaction.replace(R.id.container, new OfflineFragment());
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
-        if (id == R.id.menuSortNewest) {
-            //TODO add sorting by newest
-        } else if(id == R.id.menuSortRating){
-            //TODO add sorting by rating
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void refresh(View view) {
+        pickFragmentToLoad();
     }
 }
