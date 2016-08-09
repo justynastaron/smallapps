@@ -16,14 +16,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class FetchPostersTask extends AsyncTask<String, Void, String[]> {
+public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
-    private final String LOG_TAG = FetchPostersTask.class.getSimpleName();
+    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     private MainActivity activity;
     private ArrayAdapter<String> mPostersAdapter;
 
-    public FetchPostersTask(MainActivity activity, ArrayAdapter<String> postersAdapter){
+    public FetchMoviesTask(MainActivity activity, ArrayAdapter<String> postersAdapter){
         this.activity = activity;
         mPostersAdapter = postersAdapter;
     }
@@ -106,7 +106,6 @@ public class FetchPostersTask extends AsyncTask<String, Void, String[]> {
                 return null;
             }
             movieJsonStr = buffer.toString();
-            Log.d(LOG_TAG, "payload " + movieJsonStr);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
@@ -135,13 +134,18 @@ public class FetchPostersTask extends AsyncTask<String, Void, String[]> {
 
     @Override
     protected void onPostExecute(String[] result) {
-        if (result != null) {
-            mPostersAdapter.clear();
-            for (String movieStr : result) {
-                mPostersAdapter.add(movieStr);
+        try {
+            if (result != null) {
+                mPostersAdapter.clear();
+                for (String movieStr : result) {
+                    mPostersAdapter.add(movieStr);
+                }
+            } else {
+                activity.pickFragmentToLoad(false);
             }
-        } else {
-            activity.pickFragmentToLoad();
+        }
+        catch (NullPointerException e){
+            Log.e(LOG_TAG, "Adapter or activity is not existing anymore.", e);
         }
     }
 }

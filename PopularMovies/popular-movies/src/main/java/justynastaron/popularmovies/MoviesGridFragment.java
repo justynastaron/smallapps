@@ -18,14 +18,14 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
-public class PostersFragment extends Fragment {
+public class MoviesGridFragment extends Fragment {
 
-    private final String LOG_TAG = PostersFragment.class.getSimpleName();
+    private final String LOG_TAG = MoviesGridFragment.class.getSimpleName();
 
     private SharedPreferences preferences;
     private ArrayAdapter<String> mPostersAdapter;
 
-    public PostersFragment() {
+    public MoviesGridFragment() {
 
     }
 
@@ -96,7 +96,7 @@ public class PostersFragment extends Fragment {
 
     private void updatePosters(String sortingOrder) {
         try{
-            FetchPostersTask postersTask = new FetchPostersTask((MainActivity) getActivity(), mPostersAdapter);
+            FetchMoviesTask postersTask = new FetchMoviesTask((MainActivity) getActivity(), mPostersAdapter);
             postersTask.execute(sortingOrder);
         }
         catch (ClassCastException e){

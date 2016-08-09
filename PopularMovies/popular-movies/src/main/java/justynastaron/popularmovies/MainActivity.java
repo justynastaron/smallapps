@@ -17,16 +17,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            pickFragmentToLoad();
+            pickFragmentToLoad(true);
         }
     }
 
-    public void pickFragmentToLoad() {
+    public void pickFragmentToLoad(boolean resultsAvailable) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(isOnline()) {
-            transaction.replace(R.id.container, new PostersFragment());
-        } else {
-            transaction.replace(R.id.container, new OfflineFragment());
+            transaction.replace(R.id.container, new MoviesGridFragment());
+        }
+        else {
+            TroubleFragment troubleFragment = new TroubleFragment();
+            troubleFragment.setResultsAvailable(resultsAvailable);
+            transaction.replace(R.id.container, troubleFragment);
         }
         transaction.addToBackStack(null);
         transaction.commit();
@@ -40,6 +43,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refresh(View view) {
-        pickFragmentToLoad();
+        pickFragmentToLoad(true);
     }
 }
