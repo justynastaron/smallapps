@@ -17,13 +17,13 @@ import java.net.URL;
 
 public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
-    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+    private static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-    private MainActivity activity;
+    private MainActivity mActivity;
     private MovieAdapter mPostersAdapter;
 
     public FetchMoviesTask(MainActivity activity, MovieAdapter postersAdapter){
-        this.activity = activity;
+        this.mActivity = activity;
         mPostersAdapter = postersAdapter;
     }
 
@@ -109,7 +109,8 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
-        } finally {
+        }
+        finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -141,7 +142,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
                     mPostersAdapter.add(movie);
                 }
             } else {
-                activity.pickFragmentToLoad(false);
+                mActivity.pickFragmentToLoad(false);
             }
         }
         catch (NullPointerException e){

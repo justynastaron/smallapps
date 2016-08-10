@@ -1,9 +1,11 @@
 package justynastaron.popularmovies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,19 +21,24 @@ import java.util.ArrayList;
 
 public class MoviesGridFragment extends Fragment {
 
-    private final String LOG_TAG = MoviesGridFragment.class.getSimpleName();
+    private static final String LOG_TAG = MoviesGridFragment.class.getSimpleName();
 
-    private SharedPreferences preferences;
+    private SharedPreferences mPreferences;
     private MovieAdapter mPostersAdapter;
 
     public MoviesGridFragment() {
-
+        //Does nothing on purpose.
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Activity activity = getActivity();
+        if (activity != null) {
+            mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        } else {
+            Log.e(LOG_TAG, "Activity is not existing anymore?");
+        }
         setHasOptionsMenu(true);
     }
 
@@ -54,50 +61,61 @@ public class MoviesGridFragment extends Fragment {
     }
 
     private void saveSortingAndUpdate(String sortingOrder) {
-        preferences.edit().putString(getString(R.string.pref_sorting_key), sortingOrder).commit();
-        updatePosters(sortingOrder);
+        if (mPreferences != null) {
+            mPreferences.edit().putString(getString(R.string.pref_sorting_key), sortingOrder).commit();
+            updatePosters(sortingOrder);
+        } else {
+            Log.e(LOG_TAG, "No activity means no preferences.");
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        String savedSortingOrder = preferences.getString(getString(R.string.pref_sorting_key), SortingOrder.POPULAR.getName());
-        updatePosters(savedSortingOrder);
+        if (mPreferences != null) {
+            String savedSortingOrder = mPreferences.getString(getString(R.string.pref_sorting_key), SortingOrder.POPULAR.getName());
+            updatePosters(savedSortingOrder);
+        } else {
+            Log.e(LOG_TAG, "No activity means no preferences.");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mPostersAdapter =
-                new MovieAdapter(getActivity(), new ArrayList<Movie>());
-
+        final Activity activity = getActivity();
         View rootView = inflater.inflate(R.layout.posters_main, container, false);
 
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posters);
-        gridView.setAdapter(mPostersAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        if (activity != null) {
+            mPostersAdapter =
+                    new MovieAdapter(activity, new ArrayList<Movie>());
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Movie poster = mPostersAdapter.getItem(position);
-                Intent detailActivityStart = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, poster.toString());
-                startActivity(detailActivityStart);
-            }
-        });
+            GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posters);
+            gridView.setAdapter(mPostersAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                    Movie poster = mPostersAdapter.getItem(position);
+                    Intent detailActivityStart = new Intent(activity, DetailActivity.class).putExtra(Movie.EXTRA, poster);
+                    startActivity(detailActivityStart);
+                }
+            });
+        } else {
+            Log.e(LOG_TAG, "Activity is not existing anymore?");
+        }
 
         return rootView;
     }
 
     private void updatePosters(String sortingOrder) {
-        try{
+        try {
             FetchMoviesTask postersTask = new FetchMoviesTask((MainActivity) getActivity(), mPostersAdapter);
             postersTask.execute(sortingOrder);
-        }
-        catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "Attempt of using not MainActivity.", e);
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.e(LOG_TAG, "Are you associating fragment with context, not activity?", e);
         }
     }
@@ -105,14 +123,14 @@ public class MoviesGridFragment extends Fragment {
     private enum SortingOrder {
         POPULAR("popular"), RATING("top_rated");
 
-        private String name;
+        private String mName;
 
         SortingOrder(String name) {
-            this.name = name;
+            mName = name;
         }
 
         private String getName() {
-            return name;
+            return mName;
         }
     }
 }

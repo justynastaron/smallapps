@@ -12,9 +12,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/*
+    Custom adapter for movie posters.
+ */
 public class MovieAdapter extends ArrayAdapter<Movie> {
-    private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
-    private final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
 
     public MovieAdapter(Activity context, List<Movie> movies) {
         super(context, 0, movies);
@@ -29,7 +30,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         }
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_poster_image_view);
-        Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon().appendEncodedPath(movie.thumbnailPath)
+        Uri builtUri = Uri.parse(Movie.IMAGE_BASE_URL).buildUpon().appendEncodedPath(movie.getPosterPath())
                 .build();
         Picasso.with(getContext()).load(builtUri).into(imageView);
 

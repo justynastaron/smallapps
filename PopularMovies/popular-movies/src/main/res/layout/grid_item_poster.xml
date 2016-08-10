@@ -4,5 +4,5 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:id="@+id/grid_item_poster_image_view"
-    android:minHeight="310dp"
+    android:minHeight="@dimen/portrait_image_height"
     android:scaleType="fitXY"/>

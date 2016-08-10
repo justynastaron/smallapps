@@ -9,11 +9,10 @@ import android.widget.TextView;
 
 public class TroubleFragment extends Fragment {
 
-    private static final String LOG_TAG = TroubleFragment.class.getSimpleName();
-    private boolean resultsAvailable = false;
+    private boolean mResultsAvailable = false;
 
     public TroubleFragment() {
-
+        //Does nothing on purpose.
     }
 
     @Override
@@ -22,7 +21,7 @@ public class TroubleFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_trouble, container, false);
         TextView troubleText = (TextView) rootView.findViewById(R.id.trouble_message);
-        if (resultsAvailable) {
+        if (mResultsAvailable) {
             troubleText.setText(getString(R.string.no_internet));
         } else {
 
@@ -31,7 +30,12 @@ public class TroubleFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Sets appropriate message to show.
+     *
+     * @param resultsAvailable true represents lack of results to show (default false interpreted as lack of connectivity)
+     */
     public void setResultsAvailable(boolean resultsAvailable) {
-        this.resultsAvailable = resultsAvailable;
+        this.mResultsAvailable = resultsAvailable;
     }
 }

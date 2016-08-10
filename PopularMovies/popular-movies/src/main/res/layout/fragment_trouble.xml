@@ -14,13 +14,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/trouble_message"
         android:layout_centerHorizontal="true"
+        android:onClick="refresh"
         android:text="@string/try_again"
-        android:textColor="@color/colorPrimary"
-        android:onClick="refresh"/>
+        android:textColor="@color/colorPrimary" />
 
 </RelativeLayout>
