@@ -32,9 +32,24 @@ public class MainActivity extends AppCompatActivity {
         updatePosters();
     }
 
+    /*
+        Tries to get list of posters.
+    */
+    public void updatePosters() {
+        if (isOnline()) {
+            String savedSortingOrder = mPreferences.getString(getString(R.string.pref_sorting_key), SortingOrder.POPULAR.getName());
+            FetchMoviesTask postersTask = new FetchMoviesTask(this, mPostersAdapter);
+            postersTask.execute(savedSortingOrder);
+        } else {
+            pickFragmentToLoad(Trouble.NO_CONNECTIVITY);
+        }
+    }
+
     /**
      * Switches between {@link justynastaron.popularmovies.MoviesGridFragment} and
      * {@link justynastaron.popularmovies.TroubleFragment}.
+     *
+     * @param troubleType defines message in {@link justynastaron.popularmovies.TroubleFragment}
      */
     public void pickFragmentToLoad(Trouble troubleType) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -46,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
             troubleFragment.setTroubleType(troubleType);
             transaction.replace(R.id.container, troubleFragment);
         }
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 
     /**
      * On click "Try again" in trouble fragment.
+     *
+     * @param view {@link View} that triggers refresh
      */
     public void refresh(View view) {
         updatePosters();
@@ -68,31 +84,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    /*
-        Tries to get list of posters.
-     */
-    public void updatePosters() {
-        if (isOnline()) {
-            String savedSortingOrder = mPreferences.getString(getString(R.string.pref_sorting_key), SortingOrder.POPULAR.getName());
-            FetchMoviesTask postersTask = new FetchMoviesTask(this, mPostersAdapter);
-            postersTask.execute(savedSortingOrder);
-        } else {
-            pickFragmentToLoad(Trouble.NO_CONNECTIVITY);
-        }
-    }
-
     public void saveSortingOrder(String sortingOrder) {
         mPreferences.edit().putString(getString(R.string.pref_sorting_key), sortingOrder).commit();
     }
 
     public MovieAdapter getAdapter() {
         return mPostersAdapter;
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

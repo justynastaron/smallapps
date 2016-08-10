@@ -49,12 +49,10 @@ public class MoviesGridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        final MainActivity activity = (MainActivity) getActivity();
         View rootView = inflater.inflate(R.layout.posters_main, container, false);
 
-        if (activity != null) {
-
+        try {
+            final MainActivity activity = (MainActivity) getActivity();
             GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posters);
 
             gridView.setAdapter(activity.getAdapter());
@@ -67,20 +65,20 @@ public class MoviesGridFragment extends Fragment {
                     startActivity(detailActivityStart);
                 }
             });
-        } else {
-            Log.e(LOG_TAG, "Activity is not existing anymore?");
+        } catch (NullPointerException | ClassCastException e) {
+            Log.e(LOG_TAG, "Activity doesn't exists or is not MainActivity.");
         }
 
         return rootView;
     }
 
     private void saveSortingAndUpdate(String sortingOrder) {
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
+        try {
+            MainActivity activity = (MainActivity) getActivity();
             activity.saveSortingOrder(sortingOrder);
             activity.updatePosters();
-        } else {
-            Log.e(LOG_TAG, "No activity.");
+        } catch (NullPointerException | ClassCastException e) {
+            Log.e(LOG_TAG, "Activity doesn't exists or is not MainActivity.", e);
         }
     }
 }

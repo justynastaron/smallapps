@@ -39,7 +39,7 @@ public class DetailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         Activity activity = getActivity();
-        if(activity != null) {
+        if (activity != null) {
             Intent intent = activity.getIntent();
             if (intent != null && intent.hasExtra(Movie.EXTRA)) {
                 mCurrentMovie = intent.getParcelableExtra(Movie.EXTRA);

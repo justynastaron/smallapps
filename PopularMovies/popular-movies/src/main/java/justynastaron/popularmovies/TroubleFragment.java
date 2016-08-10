@@ -29,7 +29,7 @@ public class TroubleFragment extends Fragment {
         return rootView;
     }
 
-    public void setTroubleType(Trouble troubleType){
+    public void setTroubleType(Trouble troubleType) {
         mTroubleType = troubleType;
     }
 }
