@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class TroubleFragment extends Fragment {
 
-    private boolean mResultsAvailable = false;
+    private Trouble mTroubleType;
 
     public TroubleFragment() {
         //Does nothing on purpose.
@@ -21,21 +21,15 @@ public class TroubleFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_trouble, container, false);
         TextView troubleText = (TextView) rootView.findViewById(R.id.trouble_message);
-        if (mResultsAvailable) {
+        if (mTroubleType == Trouble.NO_CONNECTIVITY) {
             troubleText.setText(getString(R.string.no_internet));
         } else {
-
             troubleText.setText(getString(R.string.no_results));
         }
         return rootView;
     }
 
-    /**
-     * Sets appropriate message to show.
-     *
-     * @param resultsAvailable true represents lack of results to show (default false interpreted as lack of connectivity)
-     */
-    public void setResultsAvailable(boolean resultsAvailable) {
-        this.mResultsAvailable = resultsAvailable;
+    public void setTroubleType(Trouble troubleType){
+        mTroubleType = troubleType;
     }
 }

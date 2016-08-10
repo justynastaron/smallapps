@@ -22,7 +22,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
     private MainActivity mActivity;
     private MovieAdapter mPostersAdapter;
 
-    public FetchMoviesTask(MainActivity activity, MovieAdapter postersAdapter){
+    public FetchMoviesTask(MainActivity activity, MovieAdapter postersAdapter) {
         this.mActivity = activity;
         mPostersAdapter = postersAdapter;
     }
@@ -109,8 +109,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
-        }
-        finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -135,18 +134,12 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
     @Override
     protected void onPostExecute(Movie[] result) {
-        try {
-            if (result != null) {
-                mPostersAdapter.clear();
-                for (Movie movie : result) {
-                    mPostersAdapter.add(movie);
-                }
-            } else {
-                mActivity.pickFragmentToLoad(false);
+        if (result != null) {
+            mPostersAdapter.clear();
+            for (Movie movie : result) {
+                mPostersAdapter.add(movie);
             }
         }
-        catch (NullPointerException e){
-            Log.e(LOG_TAG, "Adapter or activity is not existing anymore.", e);
-        }
+        mActivity.decideDependingOnResults();
     }
 }
