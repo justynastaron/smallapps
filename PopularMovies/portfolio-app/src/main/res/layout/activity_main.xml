@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="justynastaron.portfolioapp.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:textSize="24dp"
+        android:textColor="@color/primaryText"/>
+
+    <include
+        android:id="@+id/first_button"
+        layout="@layout/app_button" />
+
+    <include
+        android:id="@+id/second_button"
+        layout="@layout/app_button" />
+
+    <include
+        android:id="@+id/third_button"
+        layout="@layout/app_button" />
+
+    <include
+        android:id="@+id/forth_button"
+        layout="@layout/app_button" />
+
+    <include
+        android:id="@+id/fifth_button"
+        layout="@layout/app_button" />
+
+    <include
+        android:id="@+id/sixth_button"
+        layout="@layout/app_button" />
+</LinearLayout>

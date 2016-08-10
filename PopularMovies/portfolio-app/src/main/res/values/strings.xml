@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Portfolio</string>
+    <string name="first_app">Popular Movies</string>
+    <string name="second_app">Stock Hawk</string>
+    <string name="third_app">Build it Bigger</string>
+    <string name="forth_app">Make Your App Material</string>
+    <string name="fifth_app">Go Ubiquitous</string>
+    <string name="sixth_app">Capstone</string>
+    <string name="title">My Nanodegree Apps!</string>
+    <string name="to_be_defined">This button will launch my %s app</string>
+    <string name="not_installed">This application is not installed yet.</string>
+</resources>
