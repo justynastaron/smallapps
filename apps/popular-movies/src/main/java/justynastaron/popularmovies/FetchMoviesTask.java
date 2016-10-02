@@ -8,23 +8,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
     private static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+    protected OkHttpClient client;
     private MainActivity mActivity;
     private MovieAdapter mPostersAdapter;
 
     public FetchMoviesTask(MainActivity activity, MovieAdapter postersAdapter) {
         this.mActivity = activity;
         mPostersAdapter = postersAdapter;
+        client = new OkHttpClient();
     }
 
     private Movie[] getPosterDataFromJson(String movieJsonStr)
@@ -70,9 +72,6 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             return null;
         }
 
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-
         String movieJsonStr = null;
 
         try {
@@ -86,40 +85,14 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
             URL url = new URL(builtUri.toString());
 
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return null;
-            }
-            movieJsonStr = buffer.toString();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Response response = client.newCall(request).execute();
+            movieJsonStr = response.body().string();
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
         }
 
         try {

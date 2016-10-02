@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences mPreferences;
-    private MovieAdapter mPostersAdapter;
+    protected SharedPreferences mPreferences;
+    protected MovieAdapter mPostersAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-        Triggers fragment update depending on receiving results by {@link FetchMoviesTask}.
+        Triggers fragment update depending on receiving results by {@link FetchMoviesTaskDebug}.
      */
     public void decideDependingOnResults() {
         if (mPostersAdapter.isEmpty()) {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         return mPostersAdapter;
     }
 
-    private boolean isOnline() {
+    protected boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
