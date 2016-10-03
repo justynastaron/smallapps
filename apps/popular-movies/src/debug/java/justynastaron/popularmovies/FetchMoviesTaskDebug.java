@@ -8,8 +8,6 @@ public class FetchMoviesTaskDebug extends FetchMoviesTask {
 
     public FetchMoviesTaskDebug(MainActivityDebug activity, MovieAdapter postersAdapter) {
         super(activity, postersAdapter);
-        if(BuildConfig.DEBUG) {
-            super.client = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
-        }
+        super.client = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
     }
 }

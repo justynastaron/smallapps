@@ -15,9 +15,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailFragment extends Fragment {
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+
+    @BindView(R.id.movie_title) TextView title;
+    @BindView(R.id.movie_release_date) TextView releaseDate;
+    @BindView(R.id.movie_summary) TextView summary;
+    @BindView(R.id.movie_rating) TextView rating;
+    @BindView(R.id.movie_poster) ImageView imageView;
 
     private Movie mCurrentMovie;
 
@@ -38,25 +47,18 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        ButterKnife.bind(this, rootView);
         Activity activity = getActivity();
         if (activity != null) {
             Intent intent = activity.getIntent();
             if (intent != null && intent.hasExtra(Movie.EXTRA)) {
                 mCurrentMovie = intent.getParcelableExtra(Movie.EXTRA);
 
-                TextView title = (TextView) rootView.findViewById(R.id.movie_title);
                 title.setText(mCurrentMovie.getTitle());
-
-                TextView releaseDate = (TextView) rootView.findViewById(R.id.movie_release_date);
                 releaseDate.setText(mCurrentMovie.getReleaseDate());
-
-                TextView summary = (TextView) rootView.findViewById(R.id.movie_summary);
                 summary.setText(mCurrentMovie.getSummary());
-
-                TextView rating = (TextView) rootView.findViewById(R.id.movie_rating);
                 rating.setText(String.valueOf(mCurrentMovie.getRating()));
 
-                ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_poster);
                 Uri builtUri = Uri.parse(Movie.IMAGE_BASE_URL).buildUpon().appendEncodedPath(mCurrentMovie.getPosterPath())
                         .build();
                 Picasso.with(activity).load(builtUri).into(imageView);

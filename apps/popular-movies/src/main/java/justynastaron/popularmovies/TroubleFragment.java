@@ -7,7 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TroubleFragment extends Fragment {
+
+    @BindView(R.id.trouble_message) TextView troubleText;
 
     private Trouble mTroubleType;
 
@@ -20,7 +25,7 @@ public class TroubleFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_trouble, container, false);
-        TextView troubleText = (TextView) rootView.findViewById(R.id.trouble_message);
+        ButterKnife.bind(this, rootView);
         if (mTroubleType == Trouble.NO_CONNECTIVITY) {
             troubleText.setText(getString(R.string.no_internet));
         } else {

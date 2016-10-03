@@ -12,6 +12,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /*
     Custom adapter for movie posters.
  */
@@ -25,15 +28,27 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Movie movie = getItem(position);
 
-        if (convertView == null) {
+        ViewHolder holder;
+        if (convertView != null) {
+            holder = (ViewHolder) convertView.getTag();
+        } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_item_poster, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
         }
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_poster_image_view);
         Uri builtUri = Uri.parse(Movie.IMAGE_BASE_URL).buildUpon().appendEncodedPath(movie.getPosterPath())
                 .build();
-        Picasso.with(getContext()).load(builtUri).into(imageView);
+        Picasso.with(getContext()).load(builtUri).into(holder.imageView);
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        @BindView(R.id.grid_item_poster_image_view) ImageView imageView;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

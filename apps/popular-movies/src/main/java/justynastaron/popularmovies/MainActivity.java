@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-        Triggers fragment update depending on receiving results by {@link FetchMoviesTaskDebug}.
+        Triggers fragment update depending on receiving results by {@link FetchMoviesTask}.
      */
     public void decideDependingOnResults() {
         if (mPostersAdapter.isEmpty()) {

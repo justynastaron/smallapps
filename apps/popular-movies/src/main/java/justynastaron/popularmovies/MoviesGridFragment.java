@@ -14,9 +14,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MoviesGridFragment extends Fragment {
 
     private static final String LOG_TAG = MoviesGridFragment.class.getSimpleName();
+
+    @BindView(R.id.gridview_posters) GridView gridView;
 
     public MoviesGridFragment() {
         //Does nothing on purpose.
@@ -50,10 +55,10 @@ public class MoviesGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.posters_main, container, false);
+        ButterKnife.bind(this, rootView);
 
         try {
             final MainActivity activity = (MainActivity) getActivity();
-            GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posters);
 
             gridView.setAdapter(activity.getAdapter());
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
